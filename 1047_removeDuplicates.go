@@ -2,45 +2,8 @@ package main
 
 import (
 	"fmt"
+	"unsafe"
 )
-
-type MyStack struct {
-	S []byte
-}
-
-func NewStack(len int) MyStack {
-	return MyStack{
-		S: make([]byte, 0, len),
-	}
-}
-
-func (this *MyStack) Empty() bool {
-	return len(this.S) == 0
-}
-
-func (this *MyStack) Peek() byte {
-	if this.Empty() {
-		return ' '
-	}
-	return this.S[len(this.S)-1]
-}
-
-func (this *MyStack) Pop() byte {
-	if this.Empty() {
-		return ' '
-	}
-	value := this.S[len(this.S)-1]
-	this.S = this.S[:len(this.S)-1]
-	return value
-}
-
-func (this *MyStack) Push(value byte) {
-	this.S = append(this.S, value)
-}
-
-func (this *MyStack) GetData() []byte {
-	return this.S
-}
 
 /*func removeDuplicates(S string) string {
 	var Tmpbyte byte
@@ -64,19 +27,18 @@ func (this *MyStack) GetData() []byte {
 	return string(Stack.GetData())
 }*/
 func removeDuplicates(S string) string {
-	Stack := NewStack(len(S))
+	s := make([]byte, 0)
+
 	for k, _ := range S {
-		if Stack.Empty() {
-			Stack.Push(S[k])
-			continue
+		if len(s) == 0 {
+			s = append(s, S[k])
+		} else if S[k] == s[len(s)-1] {
+			s = s[:len(s)-1]
+		} else {
+			s = append(s, S[k])
 		}
-		if Stack.Peek() == S[k] {
-			Stack.Pop()
-			continue
-		}
-		Stack.Push(S[k])
 	}
-	return string(Stack.GetData())
+	return *(*string)(unsafe.Pointer(&s))
 }
 
 func main() {
