@@ -1,5 +1,5 @@
-/**
-给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
+/*
+给定一个只包括 '('，')'，'{'，'}'，'['，']' 的字符串，判断字符串是否有效。
 
 有效字符串需满足：
 
@@ -11,54 +11,43 @@
 
 输入: "()"
 输出: true
-示例 2:
+示例 2:
 
 输入: "()[]{}"
 输出: true
-示例 3:
+示例 3:
 
 输入: "(]"
 输出: false
-示例 4:
+示例 4:
 
 输入: "([)]"
 输出: false
-示例 5:
+示例 5:
 
 输入: "{[]}"
 输出: true
 
-**/
+*/
 package main
 
-import (
-	"fmt"
-)
-
-var M = map[byte]int{
-	'(': -1,
-	')': 1,
-	'{': -2,
-	'}': 2,
-	'[': -3,
-	']': 3}
-
 func isValid(s string) bool {
-	Stack := make([]byte, 0)
-	for _, v := range []byte(s) {
-		if len(Stack) == 0 || M[Stack[len(Stack)-1]]+M[v] != 0 {
-			Stack = append(Stack, v)
-			continue
-		}
-		Stack = Stack[:len(Stack)-1]
+	hash := map[byte]byte{')': '(', ']': '[', '}': '{'}
+	stack := make([]byte, 0)
+	if s == "" {
+		return true
 	}
-	return len(Stack) == 0
+
+	for i := 0; i < len(s); i++ {
+		if s[i] == '(' || s[i] == '[' || s[i] == '{' {
+			stack = append(stack, s[i])
+		} else if len(stack) > 0 && stack[len(stack)-1] == hash[s[i]] {
+			stack = stack[:len(stack)-1]
+		} else {
+			return false
+		}
+	}
+	return len(stack) == 0
 }
 
-func main() {
-	fmt.Println(isValid("()"))
-	fmt.Println(isValid("()[]{}"))
-	fmt.Println(isValid("(]"))
-	fmt.Println(isValid("([)]"))
-	fmt.Println(isValid("{[]}"))
-}
+func main() {}
